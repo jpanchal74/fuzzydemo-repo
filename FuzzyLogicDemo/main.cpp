@@ -206,6 +206,7 @@ void var_set_load(void)
     if((fp=fopen("range_x.txt","r"))==NULL)
     {
         printf("Error: Can't open range_x.txt");
+        glutDestroyWindow(glutGetWindow());
         exit(0);
     }
     fscanf(fp,"%s",str);
@@ -228,6 +229,7 @@ void var_set_load(void)
     if((fp=fopen("set.txt","r"))==NULL)
     {
         printf("Error: Can't open set.txt");
+        glutDestroyWindow(glutGetWindow());
         exit(0);
     }
     fscanf(fp,"%s",str);
@@ -541,6 +543,7 @@ void fuzzy_controller(void)
     if((fp1=fopen("result.txt","w"))==NULL)
     {
         printf("Error");
+        glutDestroyWindow(glutGetWindow());
         exit(0);
     }
     
@@ -575,6 +578,7 @@ void fuzzy_controller(void)
     if((fp1=fopen("result.txt","r"))==NULL)
     {
         printf("Error");
+        glutDestroyWindow(glutGetWindow());
         exit(0);
     }
     count=0;
@@ -757,6 +761,7 @@ void Keyboard(unsigned char key, int x, int y)
     switch (key)
     {
         case 27: // ESCAPE key
+            glutDestroyWindow(glutGetWindow());
             exit(0);
             break;
     }
@@ -795,5 +800,6 @@ int main(int argc, char **argv)
     // Turn the flow of control over to GLUT
     glutMainLoop ();
     
+    glutDestroyWindow(glutGetWindow());
     exit(EXIT_SUCCESS);
 }
