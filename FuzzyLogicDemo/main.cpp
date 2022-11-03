@@ -750,6 +750,18 @@ void MouseMotion(int x, int y)
     }
 }
 
+void Keyboard(unsigned char key, int x, int y)
+{
+    //printf("%c\n",key);
+    
+    switch (key)
+    {
+        case 27: // ESCAPE key
+            exit(0);
+            break;
+    }
+}
+
 int main(int argc, char **argv)
 {
     //Create Data
@@ -775,7 +787,7 @@ int main(int argc, char **argv)
     // Register callbacks:
     glutDisplayFunc(displaySystem);
     glutReshapeFunc(reshape);
-    //glutKeyboardFunc(Keyboard);
+    glutKeyboardFunc(Keyboard);
     glutMouseFunc(MouseButton);
     glutMotionFunc(MouseMotion);
     glutIdleFunc(displaySystemUpdate);
