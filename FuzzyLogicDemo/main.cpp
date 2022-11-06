@@ -86,11 +86,13 @@ int ym_glut = g_Height/8;
 int xm, ym;
 int phi = 10;
 
-int dx,dy,phi90,count_var,count_set;
+int dx,dy;
+int phi90;
+int count_var;
+int count_set;
 float thi;
 
 static BOOL docked = FALSE;
-
 
 int XcordTransformBGIToGLUT(int x, int xmax_glut)
 {
@@ -207,7 +209,7 @@ void var_set_load(void)
     //---------------------------------------
     if((fp=fopen("range_x.txt","r"))==NULL)
     {
-        printf("Error: Can't open range_x.txt");
+        printf("Error : Can't open data file : range_x.txt \n");
         glutDestroyWindow(glutGetWindow());
         exit(0);
     }
@@ -230,7 +232,7 @@ void var_set_load(void)
     //---------------------------------------
     if((fp=fopen("set.txt","r"))==NULL)
     {
-        printf("Error: Can't open set.txt");
+        printf("Error : Can't open data file: set.txt \n");
         glutDestroyWindow(glutGetWindow());
         exit(0);
     }
@@ -536,7 +538,7 @@ void updateSystemState(void)
     }
     
 END:
-    
+
     recordNewSystemState();
 }
 
@@ -551,7 +553,7 @@ void fuzzy_controller(void)
     //----------------------------------------------------------------
     if((fp1=fopen("result.txt","w"))==NULL)
     {
-        printf("Error");
+        printf("Error : Can't write to result.txt \n");
         glutDestroyWindow(glutGetWindow());
         exit(0);
     }
@@ -562,8 +564,9 @@ void fuzzy_controller(void)
     {
         if(!strcmp(var[i].vr,"x"))
         {
-            if( (var[i].rn<dx1) && (var[i].rp>dx1) )
+            if( (var[i].rn < dx1) && (var[i].rp > dx1) )
             {
+                //Update out1 (for dx1/dx)
                 out1 = fuzzy_triangle(var[i].rn,var[i].rp,var[i].rm,dx1);
                 
                 for(j=0;j<count_var;j++)
@@ -572,6 +575,7 @@ void fuzzy_controller(void)
                     {
                         if( (var[j].rn<phi) && (var[j].rp>phi) )
                         {
+                            //Update out2 (for phi)
                             out2 = fuzzy_triangle(var[j].rn,var[j].rp,var[j].rm,phi);
                             fprintf(fp1,"%s %s %d %d\n",var[i].vname,var[j].vname,out1,out2);
                         }
@@ -586,32 +590,44 @@ void fuzzy_controller(void)
     //----------------------------------------------------------------
     if((fp1=fopen("result.txt","r"))==NULL)
     {
-        printf("Error");
+        printf("Error : Can't open result.txt \n");
         glutDestroyWindow(glutGetWindow());
         exit(0);
     }
+    
     count=0;
-    while(!feof(fp1)){
+    
+    while(!feof(fp1))
+    {
         fscanf(fp1,"%s",str1);fscanf(fp1,"%s",str2);
         fscanf(fp1,"%d",&out1);fscanf(fp1,"%d",&out2);
+        
         if(out1>out2)out1=out2;
-        for(i=0;i<count_set;i++){
-            if((!strcmp(set[i].vin1,str1))&&(!strcmp(set[i].vin2,str2))){
-                for(j=0;j<count_var;j++){
-                    if((!strcmp(set[i].vout,var[j].vname))&&(!strcmp(var[j].vr,"t"))){
+        
+        for(i=0;i<count_set;i++)
+        {
+            if( (!strcmp(set[i].vin1,str1)) && (!strcmp(set[i].vin2,str2)) )
+            {
+                for(j=0;j<count_var;j++)
+                {
+                    if( (!strcmp(set[i].vout,var[j].vname)) && (!strcmp(var[j].vr,"t")) )
+                    {
                         fuzzy_rev_triangle(var[j].rn,var[j].rp,var[j].rm,out1,&in1,&in2);
-                        sum=sum+in1+in2;goto OUT;}
+                        sum = sum + in1 + in2;
+                        goto OUT;
+                    }
                 }
             }
         }
     
-    OUT:;
+    OUT:
+        
         count++;
     }
     fclose(fp1);
     //----------------------------------------------------------------
     
-    thi=sum/count;
+    thi = sum/count;
     
     updateSystemState();
     //getch();
