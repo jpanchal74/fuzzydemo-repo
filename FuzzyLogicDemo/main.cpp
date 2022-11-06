@@ -377,7 +377,7 @@ void recordNewSystemState(void)
     //----------------------
     glColor3f(1.0,1.0,0.0);
     //char filter_string[100];
-    snprintf(filter_string, 100, "x = %d, y = %d, Phi = %d Deg\n", XcordTransformBGIToGLUT(xm,g_Width), YcordTransformBGIToGLUT(ym,g_Height), phi);
+    snprintf(filter_string, 100, "x = %d, y = %d, Phi = %d Deg, thi = %.2f\n", XcordTransformBGIToGLUT(xm,g_Width), YcordTransformBGIToGLUT(ym,g_Height), phi, thi);
     drawString((-g_Width/2)+10,(g_Height/2)-10,filter_string);
     //----------------------
 }
@@ -577,7 +577,7 @@ void fuzzy_controller(void)
             {
                 //Update out1 (for dx1/dx)
                 out1 = fuzzy_triangle(var[i].rn,var[i].rp,var[i].rm,dx1);
-                printf("%d\n",out1);
+                //printf("%d\n",out1);
                 
                 for(j=0;j<count_var;j++)
                 {
