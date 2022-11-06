@@ -56,6 +56,7 @@ enum {
 static BOOL g_bButtonLEFTDown = FALSE;
 static BOOL g_bButtonRIGHTDown = FALSE;
 static BOOL g_bPause = TRUE;
+static BOOL g_bTrace = FALSE;
 
 static int g_yClick = 0;
 
@@ -662,7 +663,12 @@ void UpdateSystem(void)
             {
                 docked = TRUE;
             }
-            glutPostRedisplay();
+            
+            if (!g_bTrace)
+            {
+                //To trace, keep this line
+                glutPostRedisplay();
+            }
         }
         else
         {
@@ -682,17 +688,28 @@ void UpdateSystem(void)
         glColor3f(0.0,1.0,1.0);
         
         char filter_string[100];
-        snprintf(filter_string, 100, "*** System PAUSED ***\n");
+        
+        if (g_bTrace == FALSE)
+        {
+            snprintf(filter_string, 100, "*** System PAUSED and Trace OFF ***\n");
+        }
+        else
+        {
+            snprintf(filter_string, 100, "*** System PAUSED and Trace ON ***\n");
+        }
         drawString((g_Width/4)-100,(g_Height/2)-10,filter_string);
         
         snprintf(filter_string, 100, "Press 'p' to toggle Unpuase/Pause\n");
         drawString((g_Width/4)-100,(g_Height/2)-20,filter_string);
         
-        snprintf(filter_string, 100, "Use MOUSE to Repostion Truck\n");
+        snprintf(filter_string, 100, "Press 't' to toggle trace ON/OFF\n");
         drawString((g_Width/4)-100,(g_Height/2)-30,filter_string);
         
-        snprintf(filter_string, 100, "Press RIGHT button & move mouse UP/DOWN to reangle Truck\n");
+        snprintf(filter_string, 100, "Use MOUSE to Repostion Truck\n");
         drawString((g_Width/4)-100,(g_Height/2)-40,filter_string);
+        
+        snprintf(filter_string, 100, "Press RIGHT button & move mouse UP/DOWN to reangle Truck\n");
+        drawString((g_Width/4)-100,(g_Height/2)-50,filter_string);
         
         glFlush();
     }
@@ -792,6 +809,9 @@ void Keyboard(unsigned char key, int x, int y)
     
     switch (key)
     {
+        case 't':
+            g_bTrace = !g_bTrace;
+            break;
         case 'p':
             g_bPause = !g_bPause;
             break;
