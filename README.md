@@ -1,5 +1,5 @@
 # Fuzzy Logic Demo : DOCK THE TRUCK
-
+# Date Files: range_x.txt, set.txt
 #Description: User will position the TRUCK using mouse and adjust the angle/direction of the TRUCK by pressing the right button and moving the mouse up/down. Once the initial position/direction angle selected, user unpause the system by pressing 'p'. Once unpaused, the system will gradually move the Truck and attempt to DOCK.   
 
 #Initial/Paused System State:
