@@ -673,6 +673,8 @@ void UpdateSystem(void)
         if (!docked)
         {
             fuzzy_controller();
+            //thi = 0;
+            //updateSystemState();
             
             if( (phi>=90) && (phi<=94) && (dy<=10) )
                 //if( (phi>=90) && (phi<=94) && (dy<=10) && (dx == 0) )
