@@ -219,7 +219,7 @@ void loadMembershipFunction(void)
     //---------------------------------------
     if((fp=fopen("membership_fuzzydemo.txt","r"))==NULL)
     {
-        printf("Error : Can't open data file : range_x.txt \n");
+        printf("Error : Can't open data file : membership_fuzzydemo.txt \n");
         glutDestroyWindow(glutGetWindow());
         exit(0);
     }
@@ -242,7 +242,7 @@ void loadMembershipFunction(void)
     //---------------------------------------
     if((fp=fopen("set_fuzzydemo.txt","r"))==NULL)
     {
-        printf("Error : Can't open data file: set.txt \n");
+        printf("Error : Can't open data file: set_fuzzydemo.txt \n");
         glutDestroyWindow(glutGetWindow());
         exit(0);
     }
@@ -338,7 +338,6 @@ void recordNewSystemState(void)
         dy=ym+(int)(L*sin(22.0*phi90/(180.0*7.0)));
         dx=xm+(int)(L*cos(22.0*phi90/(180.0*7.0)));
     }
-    
     
     //printf("updateSystemState():(xm=%d, ym=%d):(Phi=%d Deg, Thi=%3.2f Deg)\n", XcordTransformBGIToGLUT(xm,g_Width), YcordTransformBGIToGLUT(ym,g_Height), phi, thi);
     
@@ -563,7 +562,7 @@ void fuzzy_controller(void)
     //----------------------------------------------------------------
     if((fp1=fopen("result_fuzzydemo.txt","w"))==NULL)
     {
-        printf("Error : Can't write to result.txt \n");
+        printf("Error : Can't write to result_fuzzydemo.txt \n");
         glutDestroyWindow(glutGetWindow());
         exit(0);
     }
@@ -601,7 +600,7 @@ void fuzzy_controller(void)
     //----------------------------------------------------------------
     if((fp1=fopen("result_fuzzydemo.txt","r"))==NULL)
     {
-        printf("Error : Can't open result.txt \n");
+        printf("Error : Can't open result_fuzzydemo.txt \n");
         glutDestroyWindow(glutGetWindow());
         exit(0);
     }
