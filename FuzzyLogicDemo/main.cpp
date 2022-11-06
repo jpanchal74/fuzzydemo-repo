@@ -188,9 +188,19 @@ int fuzzy_triangle(int rn,int rp,int rm,int in)
 {
     int out;
 
-    if((in<rn)||(in>rp))out=0;if(in==rm)out=100;
-    if((in>rn)&&(in<rm))out=100*(in-rn)/(rm-rn);
-    else out=100*(rp-in)/(float)(rp-rm);
+    if( (in<rn) || (in>rp) ) out=0;
+    
+    if(in==rm) out=100;
+    
+    if( (in>rn) && (in<rm) )
+    {
+        out=100*(in-rn)/(rm-rn);
+    }
+    else
+    {
+        out=100*(rp-in)/(float)(rp-rm);
+    }
+    
     return out;
 }
 
@@ -200,14 +210,14 @@ void fuzzy_rev_triangle(int rn,int rp,int rm,int out,float *in1,float *in2)
     *in2 = (float)rm + (float)(rp-rm)*out/100.0;
 }
 
-void var_set_load(void)
+void loadMembershipFunction(void)
 {
     FILE *fp;
     int dmy,i;
     char str[5];
 
     //---------------------------------------
-    if((fp=fopen("range_x.txt","r"))==NULL)
+    if((fp=fopen("membership_fuzzydemo.txt","r"))==NULL)
     {
         printf("Error : Can't open data file : range_x.txt \n");
         glutDestroyWindow(glutGetWindow());
@@ -230,7 +240,7 @@ void var_set_load(void)
     //---------------------------------------
 
     //---------------------------------------
-    if((fp=fopen("set.txt","r"))==NULL)
+    if((fp=fopen("set_fuzzydemo.txt","r"))==NULL)
     {
         printf("Error : Can't open data file: set.txt \n");
         glutDestroyWindow(glutGetWindow());
@@ -551,7 +561,7 @@ void fuzzy_controller(void)
     
     
     //----------------------------------------------------------------
-    if((fp1=fopen("result.txt","w"))==NULL)
+    if((fp1=fopen("result_fuzzydemo.txt","w"))==NULL)
     {
         printf("Error : Can't write to result.txt \n");
         glutDestroyWindow(glutGetWindow());
@@ -568,6 +578,7 @@ void fuzzy_controller(void)
             {
                 //Update out1 (for dx1/dx)
                 out1 = fuzzy_triangle(var[i].rn,var[i].rp,var[i].rm,dx1);
+                printf("%d\n",out1);
                 
                 for(j=0;j<count_var;j++)
                 {
@@ -588,7 +599,7 @@ void fuzzy_controller(void)
     //----------------------------------------------------------------
     
     //----------------------------------------------------------------
-    if((fp1=fopen("result.txt","r"))==NULL)
+    if((fp1=fopen("result_fuzzydemo.txt","r"))==NULL)
     {
         printf("Error : Can't open result.txt \n");
         glutDestroyWindow(glutGetWindow());
@@ -842,10 +853,12 @@ void Keyboard(unsigned char key, int x, int y)
 
 int main(int argc, char **argv)
 {
-    //Create Data
+    //Convert Truck's position (xm,ym) of Borland C Graphic Interface coordinates to GLUT coordinates
     xm = XcordTransformGLUTToBGI(xm_glut,g_Width);
     ym = XcordTransformGLUTToBGI(ym_glut,g_Height);
-    var_set_load();
+    
+    //Load Membership functions
+    loadMembershipFunction();
     
     // GLUT Window Initialization:
     glutInit (&argc, argv);
