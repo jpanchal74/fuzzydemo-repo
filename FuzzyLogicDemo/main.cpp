@@ -55,6 +55,7 @@ enum {
 
 static BOOL g_bButtonLEFTDown = FALSE;
 static BOOL g_bButtonRIGHTDown = FALSE;
+static BOOL g_bPause = TRUE;
 
 static int g_yClick = 0;
 
@@ -343,7 +344,7 @@ void recordNewSystemState(void)
     //----------------------
     
     //----------------------
-    // Draw Docking Port
+    // Draw the Dock
     //----------------------
     glColor3f (1.0, 1.0, 1.0);
     //rectangle(getmaxx()/2,0,getmaxx()/2+40,50);
@@ -354,12 +355,19 @@ void recordNewSystemState(void)
         glVertex2d( XcordTransformBGIToGLUT((680/2)+40,g_Width), YcordTransformBGIToGLUT(60,g_Height) );
         glVertex2d( XcordTransformBGIToGLUT((680/2)-40,g_Width), YcordTransformBGIToGLUT(60,g_Height) );
     glEnd ();
+    char filter_string[100];
+    snprintf(filter_string, 100, "DOCK\n");
+    drawString(XcordTransformBGIToGLUT((680/2)-40,g_Width)+25,YcordTransformBGIToGLUT(0,g_Height)-10,filter_string);
     //----------------------
     
+    //----------------------
+    // X,Y and Phi
+    //----------------------
     glColor3f(1.0,1.0,0.0);
-    char filter_string[100];
+    //char filter_string[100];
     snprintf(filter_string, 100, "x = %d, y = %d, Phi = %d Deg\n", XcordTransformBGIToGLUT(xm,g_Width), YcordTransformBGIToGLUT(ym,g_Height), phi);
     drawString((-g_Width/2)+10,(g_Height/2)-10,filter_string);
+    //----------------------
 }
 
 void updateSystemState(void)
@@ -641,26 +649,50 @@ void reshape(GLint width, GLint height)
     glMatrixMode(GL_MODELVIEW);
 }
 
-void displaySystemUpdate(void)
+void UpdateSystem(void)
 {
-    if (!docked)
+    if (g_bPause == FALSE)
     {
-        fuzzy_controller();
-        
-        if( (phi>=90) && (phi<=94) && (dy<=10) )
-        //if( (phi>=90) && (phi<=94) && (dy<=10) && (dx == 0) )
+        if (!docked)
         {
-            docked = TRUE;
+            fuzzy_controller();
+            
+            if( (phi>=90) && (phi<=94) && (dy<=10) )
+                //if( (phi>=90) && (phi<=94) && (dy<=10) && (dx == 0) )
+            {
+                docked = TRUE;
+            }
+            glutPostRedisplay();
         }
-        glutPostRedisplay();
+        else
+        {
+            glColor3f(0.0,1.0,0.0);
+            
+            char filter_string[100];
+            snprintf(filter_string, 100, "Docking Completed!!!\n");
+            drawString((g_Width/4)+10,(g_Height/2)-10,filter_string);
+            
+            glFlush();
+        }
     }
     else
     {
-        glColor3f(0.0,1.0,0.0);
+        glutPostRedisplay();
+        
+        glColor3f(0.0,1.0,1.0);
         
         char filter_string[100];
-        snprintf(filter_string, 100, "Docking Completed!!!\n");
-        drawString((g_Width/4)+10,(g_Height/2)-10,filter_string);
+        snprintf(filter_string, 100, "*** System PAUSED ***\n");
+        drawString((g_Width/4)-100,(g_Height/2)-10,filter_string);
+        
+        snprintf(filter_string, 100, "Press 'p' to toggle Unpuase/Pause\n");
+        drawString((g_Width/4)-100,(g_Height/2)-20,filter_string);
+        
+        snprintf(filter_string, 100, "Use MOUSE to Repostion Truck\n");
+        drawString((g_Width/4)-100,(g_Height/2)-30,filter_string);
+        
+        snprintf(filter_string, 100, "Press RIGHT button & move mouse UP/DOWN to reangle Truck\n");
+        drawString((g_Width/4)-100,(g_Height/2)-40,filter_string);
         
         glFlush();
     }
@@ -760,6 +792,9 @@ void Keyboard(unsigned char key, int x, int y)
     
     switch (key)
     {
+        case 'p':
+            g_bPause = !g_bPause;
+            break;
         case 27: // ESCAPE key
             glutDestroyWindow(glutGetWindow());
             exit(0);
@@ -785,7 +820,7 @@ int main(int argc, char **argv)
     //Size of the Window
     glutInitWindowSize(g_Width,g_Height);
     
-    glutCreateWindow ("FuzzyLogic Demo");
+    glutCreateWindow ("FuzzyLogic Demo : DOCK THE TRUCK");
     
     glClearColor(0.0, 0.0, 0.0, 1.0);         // BLACK background
 
@@ -795,7 +830,7 @@ int main(int argc, char **argv)
     glutKeyboardFunc(Keyboard);
     glutMouseFunc(MouseButton);
     glutMotionFunc(MouseMotion);
-    glutIdleFunc(displaySystemUpdate);
+    glutIdleFunc(UpdateSystem);
     
     // Turn the flow of control over to GLUT
     glutMainLoop ();
